@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../Firebase/firebase'
+import { db } from '../Firebase/firebase';
+import swal from 'sweetalert';
 import ButtonsTakeOrder from './ButtonsTakeOrder';
 import Customer from './Customer';
 import SendOrder from './SendOrder';
@@ -28,13 +29,46 @@ export const Meseros = () => {
   const getNameCustomer = (inputName) => {
     setCustomerName(inputName);
   };
-
+  
   const fromTakeOrderButtons = (Nombre, Precio) => {
     setOrder([...order, { Nombre: Nombre, Precio: Precio }]);
     const newTotal = total + Precio;
     setTotal(newTotal);   
   }
-  console.log(total, order) 
+  
+  const removeItem = (item) => {
+    const newOrder = [...order];
+    const removeIndex = newOrder.map(i => {
+      return i.Nombre
+    })
+    .indexOf(item.Nombre);
+    newOrder.splice(removeIndex, 1);
+    const newTotal = total -item.Precio;
+    setOrder(newOrder);
+    setTotal(newTotal)
+  }
+
+  const cancelOrder = () => {
+    swal({
+      title: "¿Quieres cancelar la Orden?",
+      text: "Una vez eliminada, no podras recuperarla",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        setCustomerName("");
+        setOrder([]);
+        setTotal(0);
+        swal("La orden fue eliminada", {
+          icon: "success",
+        });
+      } else {
+        swal("La orden se encuentra en proceso");
+      }
+    });
+  }
 
   return(
     <section className="Waiters">    
@@ -51,8 +85,10 @@ export const Meseros = () => {
       <div className="Waiters_order">
         <SendOrder
           customerName= { customerName }
+          clearOrder= { cancelOrder }
           order= { order }
           total= { total }
+          remove= { removeItem }
         />
       </div>
     </section>

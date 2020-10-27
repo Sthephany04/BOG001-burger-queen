@@ -1,7 +1,7 @@
 import React from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-const SendOrder = ({ customerName, order, total }) => {
+const SendOrder = ({ customerName, order, total, remove, clearOrder }) => {
 
   return (
     <>
@@ -12,12 +12,16 @@ const SendOrder = ({ customerName, order, total }) => {
         {
           order.map((item, index) => {
             return (
-            <div className="Delete_item">
-              <p key={ index }>{ item.Nombre + " - $" + item.Precio }</p>
-              <DeleteIcon
-                color="action"
-                style={{ fontSize: 40 }}
-              />
+            <div>
+              <div className="Delete_item">
+                <p className= "TextOrder" key={ index }>{ item.Nombre + " - $" + item.Precio }</p>
+                <DeleteIcon
+                  onClick={ ()=> remove(item) }
+                  color="action"
+                  style={{ fontSize: 40 }}
+                />           
+              </div>
+              <hr></hr>
             </div>
             )
           })
@@ -30,7 +34,7 @@ const SendOrder = ({ customerName, order, total }) => {
         <button>
           Enviar
         </button>
-        <button>
+        <button onClick= { clearOrder }>
           Cancelar orden
         </button>
         <button>
